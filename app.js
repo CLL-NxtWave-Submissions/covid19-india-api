@@ -111,4 +111,59 @@ app.post("/districts", async (req, res) => {
   res.send("District Successfully Added");
 });
 
+/*
+    End-Point 4: GET /districts/:districtId
+    ------------
+    To fetch specific district data from
+    district table
+*/
+app.get("/districts/:districtId", async (req, res) => {
+  const { districtId } = req.params;
+
+  const getSpecificDistrictDataQuery = `
+    SELECT
+        *
+    FROM
+        district
+    WHERE
+        district_id = ${districtId};
+    `;
+
+  const specificDistrictData = await covid19IndiaDBConnectionObj.get(
+    getSpecificDistrictDataQuery
+  );
+  const processedSpecificDistrictData = {
+    districtId: specificDistrictData.district_id,
+    districtName: specificDistrictData.district_name,
+    stateId: specificDistrictData.state_id,
+    cases: specificDistrictData.cases,
+    cured: specificDistrictData.cured,
+    active: specificDistrictData.active,
+    deaths: specificDistrictData.deaths,
+  };
+
+  res.send(processedSpecificDistrictData);
+});
+
+/*
+    End-Point 5: DELETE /districts/:districtId
+    ------------
+    To delete specific district data
+    with id: districtId from the district
+    table
+*/
+app.delete("/districts/:districtId", async (req, res) => {
+  const { districtId } = req.params;
+
+  const deleteSpecificDistrictDataQuery = `
+    DELETE FROM
+        district
+    WHERE
+        district_id = ${districtId};
+    `;
+
+  await covid19IndiaDBConnectionObj.run(deleteSpecificDistrictDataQuery);
+  res.send("District Removed");
+});
+
 module.exports = app;
