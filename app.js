@@ -229,4 +229,36 @@ app.get("/states/:stateId/stats", async (req, res) => {
   res.send(processedAggregatedStatsForSpecificState);
 });
 
+/*
+    End-Point 8: /districts/:districtId/details
+    ------------
+    To fetch the name of the state that specific
+    district is part of, with id: districtId
+*/
+app.get("/districts/:districtId/details", async (req, res) => {
+  const { districtId } = req.params;
+
+  const getStateNameForSpecificDistrictQuery = `
+    SELECT 
+        DISTINCT state.state_name
+    FROM
+        state
+    INNER JOIN
+        district
+    ON
+        state.state_id = district.state_id
+    WHERE
+        district.district_id = ${districtId};
+    `;
+
+  const stateNameForSpecificDistrict = await covid19IndiaDBConnectionObj.get(
+    getStateNameForSpecificDistrictQuery
+  );
+  const processedStateNameForSpecificDistrict = {
+    stateName: stateNameForSpecificDistrict.state_name,
+  };
+
+  res.send(processedStateNameForSpecificDistrict);
+});
+
 module.exports = app;
