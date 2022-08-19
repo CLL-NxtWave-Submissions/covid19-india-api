@@ -56,4 +56,35 @@ app.get("/states", async (req, res) => {
   res.send(processedStatesData);
 });
 
+/*
+    End-Point 2: GET /states/:stateId
+    -----------
+    To fetch specific state data with
+    id: stateId from state table in
+    sqlite database
+*/
+app.get("/states/:stateId", async (req, res) => {
+  const { stateId } = req.params;
+
+  const getSpecificStateDataQuery = `
+    SELECT
+        *
+    FROM
+        state
+    WHERE
+        state_id = ${stateId};
+    `;
+
+  const specificStateData = await covid19IndiaDBConnectionObj.get(
+    getSpecificStateDataQuery
+  );
+  const processedSpecificStateData = {
+    stateId: specificStateData.state_id,
+    stateName: specificStateData.state_name,
+    population: specificStateData.population,
+  };
+
+  res.send(processedSpecificStateData);
+});
+
 module.exports = app;
