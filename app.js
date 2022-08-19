@@ -193,4 +193,40 @@ app.put("/districts/:districtId", async (req, res) => {
   res.send("District Details Updated");
 });
 
+/*
+    End-Point 7: /states/:stateId/stats
+    ------------
+    To fetch aggregated stats of covid-19
+    cases for all districts in the specific
+    state with id: stateId, from the district
+    table
+*/
+app.get("/states/:stateId/stats", async (req, res) => {
+  const { stateId } = req.params;
+
+  const getAggregatedStatsOfSpecificStateQuery = `
+    SELECT
+        SUM(cases) AS total_cases,
+        SUM(cured) AS total_cured,
+        SUM(active) AS total_active,
+        SUM(deaths) AS total_deaths
+    FROM
+        district
+    WHERE
+        state_id = ${stateId};
+    `;
+
+  const aggregatedStatsForSpecificState = await covid19IndiaDBConnectionObj.get(
+    getAggregatedStatsOfSpecificStateQuery
+  );
+  const processedAggregatedStatsForSpecificState = {
+    totalCases: aggregatedStatsForSpecificState.total_cases,
+    totalCured: aggregatedStatsForSpecificState.total_cured,
+    totalActive: aggregatedStatsForSpecificState.total_active,
+    totalDeaths: aggregatedStatsForSpecificState.total_deaths,
+  };
+
+  res.send(processedAggregatedStatsForSpecificState);
+});
+
 module.exports = app;
