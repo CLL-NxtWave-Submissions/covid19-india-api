@@ -28,3 +28,5 @@ const initializeDBAndServer = async () => {
 };
 
 initializeDBAndServer();
+
+module.exports = app;
