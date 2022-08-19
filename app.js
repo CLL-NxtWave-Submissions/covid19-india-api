@@ -29,4 +29,31 @@ const initializeDBAndServer = async () => {
 
 initializeDBAndServer();
 
+/*
+    End-Point 1: GET /states
+    ------------
+    To all states data from the
+    state table in sqlite database
+*/
+
+app.get("/states", async (req, res) => {
+  const getAllStatesQuery = `
+    SELECT 
+        *
+    FROM
+        state;
+    `;
+
+  const allStatesData = await covid19IndiaDBConnectionObj.all(
+    getAllStatesQuery
+  );
+  const processedStatesData = allStatesData.map((singleStateData) => ({
+    stateId: singleStateData.state_id,
+    stateName: singleStateData.state_name,
+    population: singleStateData.population,
+  }));
+
+  res.send(processedStatesData);
+});
+
 module.exports = app;
