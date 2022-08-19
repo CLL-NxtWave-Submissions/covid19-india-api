@@ -166,4 +166,31 @@ app.delete("/districts/:districtId", async (req, res) => {
   res.send("District Removed");
 });
 
+/*
+    End-Point 6: PUT /districts/:districtId
+    ------------
+    To update data of specific district
+    in the district table
+*/
+app.put("/districts/:districtId", async (req, res) => {
+  const { districtId } = req.params;
+  const { districtName, stateId, cases, cured, active, deaths } = req.body;
+
+  const updateSpecificDistrictDataQuery = `
+    UPDATE district
+    SET
+        district_name = '${districtName}',
+        state_id = ${stateId},
+        cases = ${cases},
+        cured = ${cured},
+        active = ${active},
+        deaths = ${deaths}
+    WHERE
+        district_id = ${districtId};
+    `;
+
+  await covid19IndiaDBConnectionObj.run(updateSpecificDistrictDataQuery);
+  res.send("District Details Updated");
+});
+
 module.exports = app;
