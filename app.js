@@ -87,4 +87,28 @@ app.get("/states/:stateId", async (req, res) => {
   res.send(processedSpecificStateData);
 });
 
+/*
+    End-Point 3: POST /districts
+    ------------
+    To add new district data to
+    the district table
+*/
+app.post("/districts", async (req, res) => {
+  const { districtName, stateId, cases, cured, active, deaths } = req.body;
+
+  const addNewDistrictData = `
+    INSERT INTO
+        district (district_name, state_id, cases, cured, active, deaths)
+    VALUES
+        ('${districtName}', ${stateId}, ${cases}, ${cured}, ${active}, ${deaths});
+    `;
+
+  const addNewDistrictDataDBResponse = await covid19IndiaDBConnectionObj.run(
+    addNewDistrictData
+  ); // response obj has primary key
+  // of new data row in the property
+  // lastID
+  res.send("District Successfully Added");
+});
+
 module.exports = app;
