@@ -36,7 +36,7 @@ initializeDBAndServer();
     state table in sqlite database
 */
 
-app.get("/states", async (req, res) => {
+app.get("/states/", async (req, res) => {
   const getAllStatesQuery = `
     SELECT 
         *
